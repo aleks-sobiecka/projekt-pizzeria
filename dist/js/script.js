@@ -106,7 +106,7 @@ const select = {
       console.log('settings:', settings);
       console.log('templates:', templates);
 
-      thisApp.initDatta();
+      thisApp.initData();
       thisApp.initMenu();
     },
   };
