@@ -167,15 +167,18 @@ const select = {
           const option = param.options[optionId];
           console.log(optionId, option);
 
+          //create constant for param with a name of paramId in formData that includes optionId
+          const optionSelected = formData[paramId] && formData[paramId].includes(optionId);
+
           //find option Image
           const optionImage = thisProduct.imageWrapper.querySelector("."+paramId+"-"+optionId);
-          console.log(optionImage);
-          console.log("."+paramId+"-"+optionId);
+          //console.log(optionImage);
+          //console.log("."+paramId+"-"+optionId);
 
           //check if the Image was found
           if(optionImage) {
             //check if there is param with a name of paramId in formData and if it includes optionId
-            if(formData[paramId] && formData[paramId].includes(optionId)){
+            if(optionSelected){
 
               //--> it's included
               // add class active to the image
@@ -190,7 +193,7 @@ const select = {
           }
 
           // check if there is param with a name of paramId in formData and if it includes optionId
-          if(formData[paramId] && formData[paramId].includes(optionId)){
+          if(optionSelected){
             //--> it's included
 
             // check if the option is not default
