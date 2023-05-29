@@ -155,6 +155,7 @@ const select = {
 
       // set price to default price
       let price = thisProduct.data.price;
+      console.log(price);
 
       // for every category (param)...
       for(let paramId in thisProduct.data.params){
@@ -169,6 +170,26 @@ const select = {
           // determine option value, e.g. optionId = 'olives', option = { label: 'Olives', price: 2, default: true }
           const option = param.options[optionId];
           console.log(optionId, option);
+
+
+          // check if there is param with a name of paramId in formData and if it includes optionId
+          if(formData[paramId] && formData[paramId].includes(optionId)){
+            //--> it's included
+            // check if the option is not default
+            if (!option.default == true){
+              //(if it's not default) add option price to price variable
+              price = price + option.price
+              console.log(price)
+            }
+          } 
+          // --> it's not included
+          else {
+            // check if the option is default
+            if (option.default == true){
+              // reduce price variable
+              price = price - option.price
+            }
+          }
         }
       }
 
