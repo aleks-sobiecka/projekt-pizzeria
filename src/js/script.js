@@ -88,15 +88,11 @@ const select = {
       const thisProduct = this;
 
       thisProduct.accordionTrigger = thisProduct.element.querySelector(select.menuProduct.clickable);
-      console.log(thisProduct.accordionTrigger);
       thisProduct.form = thisProduct.element.querySelector(select.menuProduct.form);
-      console.log(thisProduct.form);
       thisProduct.formInputs = thisProduct.form.querySelectorAll(select.all.formInputs);
-      console.log(thisProduct.formInputs);
       thisProduct.cartButton = thisProduct.element.querySelector(select.menuProduct.cartButton);
-      console.log(thisProduct.cartButton);
       thisProduct.priceElem = thisProduct.element.querySelector(select.menuProduct.priceElem);
-      console.log(thisProduct.priceElem);
+      thisProduct.imageWrapper = thisProduct.element.querySelector(select.menuProduct.imageWrapper);
     }
 
     initAccordion(){
@@ -171,10 +167,32 @@ const select = {
           const option = param.options[optionId];
           console.log(optionId, option);
 
+          //find option Image
+          const optionImage = thisProduct.imageWrapper.querySelector("."+paramId+"-"+optionId);
+          console.log(optionImage);
+          console.log("."+paramId+"-"+optionId);
+
+          //check if the Image was found
+          if(optionImage) {
+            //check if there is param with a name of paramId in formData and if it includes optionId
+            if(formData[paramId] && formData[paramId].includes(optionId)){
+
+              //--> it's included
+              // add class active to the image
+              optionImage.classList.add(classNames.menuProduct.imageVisible);
+            }
+
+            //--> it's not included
+            else {
+              // remove class active from image
+            optionImage.classList.remove(classNames.menuProduct.imageVisible);
+            }
+          }
 
           // check if there is param with a name of paramId in formData and if it includes optionId
           if(formData[paramId] && formData[paramId].includes(optionId)){
             //--> it's included
+
             // check if the option is not default
             if (!option.default == true){
               //(if it's not default) add option price to price variable
@@ -184,6 +202,7 @@ const select = {
           } 
           // --> it's not included
           else {
+
             // check if the option is default
             if (option.default == true){
               // reduce price variable
