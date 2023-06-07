@@ -94,7 +94,6 @@ const select = {
 
       //console.log('new Product: ', thisProduct);
     }
-
     renderInMenu(){
       const thisProduct = this;
 
@@ -110,7 +109,6 @@ const select = {
       /* add element to menu */
       menuContainer.appendChild(thisProduct.element);
     }
-
     getElements(){
       const thisProduct = this;
 
@@ -122,7 +120,6 @@ const select = {
       thisProduct.imageWrapper = thisProduct.element.querySelector(select.menuProduct.imageWrapper);
       thisProduct.amountWidgetElem = thisProduct.element.querySelector(select.menuProduct.amountWidget);
     }
-
     initAccordion(){
       const thisProduct = this;
       //console.log(thisProduct);
@@ -149,7 +146,6 @@ const select = {
         thisProduct.element.classList.toggle(classNames.menuProduct.wrapperActive);
       });
     }
-
     initOrderForm(){
       const thisProduct = this;
 
@@ -164,7 +160,7 @@ const select = {
         });
       }
 
-      thisProduct.cartButton.addEventListener('click', function(event){
+      thisProduct.cartButton.addEventListener('click', function(){
         //event.preventDefeult();
         thisProduct.processOrder();
         thisProduct.addToCart();
@@ -275,13 +271,55 @@ const select = {
         amount: thisProduct.amountWidget.value,
         priceSingle: thisProduct.priceSingle,
         price: thisProduct.priceSingle * thisProduct.amountWidget.value,
-        params: {},
+        params: this.prepareCartProductParams(),
       };
 
       return productSummary;
     }
-    
+    prepareCartProductParams(){
+      const thisProduct = this;
+
+      // covert form to object structure e.g. { sauce: ['tomato'], toppings: ['olives', 'redPeppers']}
+      const formData = utils.serializeFormToObject(thisProduct.form);
+      //console.log('formData', formData);
+
+      // create object params
+      const params = {};
+
+      // for every category (param)...
+      for(let paramId in thisProduct.data.params){
+
+        // determine param value, e.g. paramId = 'toppings', param = { label: 'Toppings', type: 'checkboxes'... }
+        const param = thisProduct.data.params[paramId];
+        //console.log(paramId, param);
+
+        // create category param in params const eg. params = { ingredients: { name: 'Ingredients', options: {}}}
+        params[paramId] = {
+          label: param.label,
+          options: {}
+        }
+
+        // for every option in this category
+        for(let optionId in param.options) {
+
+          // determine option value, e.g. optionId = 'olives', option = { label: 'Olives', price: 2, default: true }
+          const option = param.options[optionId];
+          //console.log(optionId, option);
+
+          //create constant for param with a name of paramId in formData that includes optionId
+          const optionSelected = formData[paramId] && formData[paramId].includes(optionId);
+
+          // check if there is param with a name of paramId in formData and if it includes optionId
+          if(optionSelected){
+            //--> it's included
+            params[paramId].options[optionId] = option.label;
+          }
+        }
+      }
+      
+    return params;
   }
+}
 
   class AmountWidget {
     constructor(element) {
@@ -353,7 +391,6 @@ const select = {
 
       console.log('new Cart', thisCart);
     } 
-
     getElements(element){
       const thisCart = this;
 
@@ -362,8 +399,8 @@ const select = {
       thisCart.dom.wrapper = element;
       thisCart.dom.toggleTrigger = element.querySelector(select.cart.toggleTrigger);
       console.log(thisCart.dom.toggleTrigger);
+      thisCart.dom.productList = thisCart.dom.wrapper.querySelector(select.cart.productList);
     }
-
     initActions(){
       const thisCart = this;
 
@@ -374,10 +411,19 @@ const select = {
       });
     }
     add(menuProduct){
-      // const thisCart = this;
-
+      const thisCart = this;
       console.log('adding product', menuProduct);
-    }
+
+      /* generate HTML based on template */
+      const generatedHTML = templates.cartProduct(menuProduct);
+
+      /* create element using utils.createElementFromHTML */
+      const generatedDOM = utils.createDOMFromHTML(generatedHTML);
+
+      /* add element to menu */
+      thisCart.dom.productList.appendChild(generatedDOM);
+
+    } 
   } 
 
   const app = {
@@ -389,20 +435,17 @@ const select = {
         new Product(productData, thisApp.data.products[productData]);
       }
     },
-
     initData: function(){
       const thisApp = this;
 
       thisApp.data = dataSource;
     },
-
     initCart: function(){
       const thisApp = this;
 
       const cartElem = document.querySelector(select.containerOf.cart);
       thisApp.cart = new Cart(cartElem);
     },
-
     init: function(){
       const thisApp = this;
       //console.log('*** App starting ***');
@@ -415,7 +458,6 @@ const select = {
       thisApp.initMenu();
       thisApp.initCart();
     },
-
   };
 
   app.init();
