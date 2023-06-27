@@ -6,6 +6,7 @@ class Home{
         const thisHome = this;
 
         thisHome.render(element);
+        thisHome.initCarousel();
     }
     render(element){
         const thisHome = this;
@@ -17,6 +18,17 @@ class Home{
         const generatedDOM = utils.createDOMFromHTML(generatedHTML);
         thisHome.dom.wrapper.appendChild(generatedDOM);
     }
+
+    initCarousel(){
+    var elem = document.querySelector('.main-carousel');
+    var flkty = new Flickity( elem, {
+    // options
+    cellAlign: 'left',
+    contain: true,
+    autoPlay: true
+    });
+    }
+
 }
 
 export default Home; 

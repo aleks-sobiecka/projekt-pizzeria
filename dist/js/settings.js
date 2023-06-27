@@ -72,7 +72,8 @@ export const select = {
         starters: '.booking-options',
     },
     nav: {
-        links: '.main-nav a',
+        links: '.main-nav a, .home-options a',
+        check: '.home-options a',
     },
 };
   
