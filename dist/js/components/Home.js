@@ -27,6 +27,7 @@ class Home{
     contain: true,
     autoPlay: true
     });
+    console.log(flkty);
     }
 
 }
